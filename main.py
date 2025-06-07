@@ -2,10 +2,8 @@
 
 import asyncio, re, os
 from playwright.async_api import async_playwright, Page
-import json
+import json, glob, requests, time
 from datetime import datetime
-import requests
-import time
 
 # Regex patterns
 addrPat = re.compile(r'^.+?,\s*.+?,\s*TX,\s*\d{5}(?:,\s*US)?$')
@@ -169,6 +167,23 @@ def run_gattis_locations(apiKey):
 	print(f"\nTotal locations: {len(locations)}\n")
 
 
+
+def gmaps(name, radius, lat, lng, api_key):
+	url = (
+		f"https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+		f"?location={lat},{lng}&radius={radius}&key={api_key}"
+	)
+	resp = requests.get(url)
+	data = resp.json()
+	for place in data.get("results", []):
+		place_name = place.get("name", "").lower()
+		if name.lower() in place_name:
+			return True
+	return False
+
+
+
+
 #######################################################################
 #######################################################################
 #######################################################################
@@ -176,8 +191,52 @@ def run_gattis_locations(apiKey):
 os.system('cls')  # Clear screen on Windows
 
 APIKEY = "AIzaSyD19HD2hVPe7UnqvErvBtidEwv9f3l3vb0"
-	
-run_gattis_locations(APIKEY)
+
+
+#run_gattis_locations(APIKEY)
+
+# Find the most recent googleapi*.json file
+json_files = glob.glob("googleapi*.json")
+latest_file = max(json_files, key=os.path.getmtime)
+
+with open(latest_file, "r") as f:
+	locations = json.load(f)
+
+results = []
+found_count = 0
+missing_count = 0
+
+for i, loc in enumerate(locations):
+	lat = loc["lat"]
+	lng = loc["lng"]
+	found = gmaps("gatti", 100, lat, lng, APIKEY)
+	status = "found" if found else "missing"
+	if found:
+		found_count += 1
+	else:
+		missing_count += 1
+	results.append({
+		"index": i,
+		"lat": lat,
+		"lng": lng,
+		"status": status
+	})
+	print(f"{i}:\t {lat}, {lng}, {'✅' if found else '❌'} {status}")
+
+# Write output file
+timestamp = datetime.now().strftime("%d%m%y_%H%M")
+out_file = f"googlemaps_{timestamp}.json"
+with open(out_file, "w") as f:
+	json.dump(results, f, indent=2)
+
+# Summary
+total = found_count + missing_count
+print("\nSummary:")
+print(f"✅ Found:   {found_count}")
+print(f"❌ Missing: {missing_count}")
+print(f"📦 Total:   {total}")
+
+
 
 print("==============")
 print("END OF PROGRAM")
