@@ -1,0 +1,10 @@
+when you give me code, format it with the proper indent in the context of the file.
+
+
+Here is the workflow I want:
+1. i tell you what i need.
+2. you give me a one to five line explanation of the problem.
+3. you give me a new func that fixes it, in context to the project (main.py)
+
+ok.  when i start a text with share, just read it and respond with 'got input'.
+for statements like this, when im just telling you what to do, just respond with, 'understood'
