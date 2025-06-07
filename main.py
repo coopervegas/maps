@@ -2,6 +2,10 @@
 
 import asyncio, re, os
 from playwright.async_api import async_playwright, Page
+import json
+from datetime import datetime
+import requests
+import time
 
 # Regex patterns
 addrPat = re.compile(r'^.+?,\s*.+?,\s*TX,\s*\d{5}(?:,\s*US)?$')
@@ -50,10 +54,7 @@ async def get_url_data(url: str) -> list[dict]:
 		page = context.pages[0] if context.pages else await context.new_page()
 		await page.goto(url, wait_until='load', timeout=60000)
 
-		print("[INFO] Page loaded, handling popups...")
 		await dismiss_popups(page)
-		print("[INFO] Finished handling popups")
-
 
 		raw_text = await page.evaluate("document.body.innerText")
 		lines = raw_text.splitlines()
@@ -73,9 +74,93 @@ async def get_url_data(url: str) -> list[dict]:
 		print(f"[INFO] Scraping complete. Found {len(results)} address/phone pairs.")
 		return results
 
+
+#######################################################################
+def fetch_gattis_locations(apiKey: str, region: str = "Texas") -> list:
+	"""
+	Fetches all Gatti's Pizza locations in the specified region using Google Places API.
+	
+	Args:
+		apiKey (str): Your Google Places API key.
+		region (str): Geographic area to search in (default is 'Texas').
+
+	Returns:
+		list: List of dicts with name, address, and location coordinates.
+	"""
+	query = f"Gatti's Pizza in {region}"
+	url = f"https://maps.googleapis.com/maps/api/place/textsearch/json?query={query}&key={apiKey}"
+
+	results = []
+	resp = requests.get(url)
+	data = resp.json()
+	results.extend(data.get("results", []))
+
+	while "next_page_token" in data:
+		time.sleep(2)  # Required delay
+		next_url = f"https://maps.googleapis.com/maps/api/place/textsearch/json?pagetoken={data['next_page_token']}&key={apiKey}"
+		resp = requests.get(next_url)
+		data = resp.json()
+		results.extend(data.get("results", []))
+
+	# Extract relevant info
+	locations = []
+	for place in results:
+		locations.append({
+			"name": place.get("name"),
+			"address": place.get("formatted_address"),
+			"lat": place.get("geometry", {}).get("location", {}).get("lat"),
+			"lng": place.get("geometry", {}).get("location", {}).get("lng")
+		})
+	
+	return locations
+
+
+
 #######################################################################
 def main():
 	os.system('cls')  # Clear screen on Windows
+
+
+
+	apiKey = "AIzaSyD19HD2hVPe7UnqvErvBtidEwv9f3l3vb0"
+	#locations = fetch_gattis_locations(apiKey)
+
+	states = ["Texas", "Kentucky", "Louisiana", "Indiana", "Alabama", "Tennessee", "Ohio", "Oklahoma", "Arkansas", "Missouri"]
+	locations = []
+	for st in states:
+		locs = fetch_gattis_locations(apiKey, region=st)
+		locations.extend(locs)
+
+	# Generate filename
+	ts = datetime.now().strftime("%d%m%y_%H%M")
+	fname = f"googleapi{ts}.json"
+
+	# Save to JSON file
+	with open(fname, "w", encoding="utf-8") as f:
+		json.dump(locations, f, indent=2)
+
+	print(f"Saved {len(locations)} locations to {fname}")
+
+	for loc in locations:
+		name = loc["name"]
+		addr = loc["address"].split(", United States")[0]  # Clean off the ending
+		print(f"{name} — {addr}")
+	print(f"\nTotal locations: {len(locations)}\n")
+
+
+
+
+	exit
+
+
+
+
+
+
+
+
+
+
 	url = "https://mrgattispizza.com/locations/"
 	results = asyncio.run(get_url_data(url))
 
