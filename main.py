@@ -11,8 +11,8 @@ import time
 addrPat = re.compile(r'^.+?,\s*.+?,\s*TX,\s*\d{5}(?:,\s*US)?$')
 phonePat = re.compile(r'\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}')
 
-
-
+#######################################################################
+#######################################################################
 #######################################################################
 
 
@@ -78,6 +78,33 @@ async def get_url_data(url: str) -> list[dict]:
 
 
 #######################################################################
+def old_get_location_data():
+	url = "https://mrgattispizza.com/locations/"
+	results = asyncio.run(get_url_data(url))
+
+	print(f"\n{url}")
+	print("Locations:")
+
+	def prt_location(street, city, state, phone, w1, w2, w3, w4):
+		def fmt(s, w): return s.strip()[:w].ljust(w)
+		print(fmt(street, w1) + ' ' +	fmt(city, w2) + ' ' +	fmt(state, w3) + ' ' +	fmt(phone, w4))		
+
+
+	for i, entry in enumerate(results):
+		addr = re.sub(r'\b(Suite|STE|#)\s*\w+\b', '', entry['address'], flags=re.IGNORECASE)
+		addr = re.sub(r'\(.*?\)', '', addr)
+		addr_parts = [part.strip() for part in addr.split(',') if part.strip()]
+
+		street = addr_parts[0] if len(addr_parts) > 0 else ''
+		city = addr_parts[1] if len(addr_parts) > 1 else ''
+		state = addr_parts[2].split()[0] if len(addr_parts) > 2 else ''
+		phone = entry['phone'].strip()
+
+		prt_location(street, city, state, phone, 25, 15, 2, 15)
+	print(f"\nTotal locations: {len(results)}\n")
+
+
+#######################################################################
 def fetch_gattis_locations(apiKey: str, region: str = "Texas") -> list:
 	"""
 	Fetches all Gatti's Pizza locations in the specified region using Google Places API.
@@ -116,16 +143,8 @@ def fetch_gattis_locations(apiKey: str, region: str = "Texas") -> list:
 	
 	return locations
 
-
-
 #######################################################################
-def main():
-	os.system('cls')  # Clear screen on Windows
-
-
-
-	apiKey = "AIzaSyD19HD2hVPe7UnqvErvBtidEwv9f3l3vb0"
-	#locations = fetch_gattis_locations(apiKey)
+def run_gattis_locations(apiKey):
 
 	states = ["Texas", "Kentucky", "Louisiana", "Indiana", "Alabama", "Tennessee", "Ohio", "Oklahoma", "Arkansas", "Missouri"]
 	locations = []
@@ -150,44 +169,16 @@ def main():
 	print(f"\nTotal locations: {len(locations)}\n")
 
 
-
-
-	exit
-
-
-
-
-
-
-
-
-
-
-	url = "https://mrgattispizza.com/locations/"
-	results = asyncio.run(get_url_data(url))
-
-	print(f"\n{url}")
-	print("Locations:")
-
-	def prt_location(street, city, state, phone, w1, w2, w3, w4):
-		def fmt(s, w): return s.strip()[:w].ljust(w)
-		print(fmt(street, w1) + ' ' +	fmt(city, w2) + ' ' +	fmt(state, w3) + ' ' +	fmt(phone, w4))		
-
-
-	for i, entry in enumerate(results):
-		addr = re.sub(r'\b(Suite|STE|#)\s*\w+\b', '', entry['address'], flags=re.IGNORECASE)
-		addr = re.sub(r'\(.*?\)', '', addr)
-		addr_parts = [part.strip() for part in addr.split(',') if part.strip()]
-
-		street = addr_parts[0] if len(addr_parts) > 0 else ''
-		city = addr_parts[1] if len(addr_parts) > 1 else ''
-		state = addr_parts[2].split()[0] if len(addr_parts) > 2 else ''
-		phone = entry['phone'].strip()
-
-		prt_location(street, city, state, phone, 25, 15, 2, 15)
-	print(f"\nTotal locations: {len(results)}\n")
-
-
 #######################################################################
-if __name__ == "__main__":
-	main()
+#######################################################################
+#######################################################################
+
+os.system('cls')  # Clear screen on Windows
+
+APIKEY = "AIzaSyD19HD2hVPe7UnqvErvBtidEwv9f3l3vb0"
+	
+run_gattis_locations(APIKEY)
+
+print("==============")
+print("END OF PROGRAM")
+print("==============")
