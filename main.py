@@ -105,20 +105,11 @@ async def getPOIs(url: str, searchTerms: List[str], geocodes: list, limit: int =
 						"state": state
 					})
 
-
-				for item in parsed:
-					print("--------")
-					for k, v in item.items():
-						print(f"{k}: {v}")
-
-
-
 				await context.close()
 
 		await browser.close()
 
 	return all_results
-
 
 
 #######################################################################
@@ -141,7 +132,7 @@ terms = ["Gatti's Pizza", "GattiTown"]
 url = "https://mrgattispizza.com/locations/"
 
 # Run the scraper (limit = how many to parse, for testing.)
-results = asyncio.run(getPOIs(url, terms, geo_data, limit=2))
+results = asyncio.run(getPOIs(url, terms, geo_data, limit=None))
 
 # output our results to a json file
 # will create timestamped filename.  Example: gattis_pois_1048am_june6.json
@@ -149,83 +140,3 @@ write_json(create_fname("gattis_pois_", ".json"), results)
 
 
 exit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-states = ["Texas", "Kentucky", "Louisiana", "Indiana", "Alabama", "Tennessee", "Ohio", "Oklahoma", "Arkansas", "Missouri"]
-search_terms = [f"Gatti's Pizza", f"Gattitown"]
-getPOIs(APIKEY, states, search_terms)
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Find the most recent googleapi*.json file
-json_files = glob.glob("googleapi*.json")
-latest_file = max(json_files, key=os.path.getmtime)
-
-with open(latest_file, "r") as f:
-	locations = json.load(f)
-
-results = []
-found_count = 0
-missing_count = 0
-
-for i, loc in enumerate(locations):
-	lat = loc["lat"]
-	lng = loc["lng"]
-	found = gmaps("gatti", 100, lat, lng, APIKEY)
-	status = "found" if found else "missing"
-	if found:
-		found_count += 1
-	else:
-		missing_count += 1
-	results.append({
-		"index": i,
-		"lat": lat,
-		"lng": lng,
-		"status": status
-	})
-	print(f"{i}:\t {lat}, {lng}, {'✅' if found else '❌'} {status}")
-
-# Write output file
-timestamp = datetime.now().strftime("%d%m%y_%H%M")
-out_file = f"googlemaps_{timestamp}.json"
-with open(out_file, "w") as f:
-	json.dump(results, f, indent=2)
-
-# Summary
-total = found_count + missing_count
-print("\nSummary:")
-print(f"✅ Found:   {found_count}")
-print(f"❌ Missing: {missing_count}")
-print(f"📦 Total:   {total}")
-
-
-
-print("==============")
-print("END OF PROGRAM")
-print("==============")
