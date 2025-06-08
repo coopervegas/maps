@@ -1,0 +1,90 @@
+[
+  {
+    "state": "Texas",
+    "cities": [
+      {"city": "Houston", "lat": 29.7604, "lng": -95.3698},
+      {"city": "San Antonio", "lat": 29.4241, "lng": -98.4936},
+      {"city": "Dallas", "lat": 32.7767, "lng": -96.7970},
+      {"city": "Fort Worth", "lat": 32.7555, "lng": -97.3308},
+      {"city": "Austin", "lat": 30.2672, "lng": -97.7431},
+      {"city": "El Paso", "lat": 31.7619, "lng": -106.4850},
+      {"city": "Arlington", "lat": 32.7357, "lng": -97.1081},
+      {"city": "Corpus Christi", "lat": 27.8006, "lng": -97.3964},
+      {"city": "Plano", "lat": 33.0198, "lng": -96.6989},
+      {"city": "Lubbock", "lat": 33.5779, "lng": -101.8552},
+      {"city": "Garland", "lat": 32.9126, "lng": -96.6389},
+      {"city": "Irving", "lat": 32.8140, "lng": -96.9489},
+      {"city": "Amarillo", "lat": 35.2210, "lng": -101.8313},
+      {"city": "Grand Prairie", "lat": 32.7459, "lng": -96.9978},
+      {"city": "McKinney", "lat": 33.1972, "lng": -96.6155}
+    ]
+  },
+  {
+    "state": "Kentucky",
+    "cities": [
+      {"city": "Louisville", "lat": 38.2527, "lng": -85.7585},
+      {"city": "Lexington", "lat": 38.0406, "lng": -84.5037},
+      {"city": "Bowling Green", "lat": 36.9685, "lng": -86.4808}
+    ]
+  },
+  {
+    "state": "Louisiana",
+    "cities": [
+      {"city": "New Orleans", "lat": 29.9553, "lng": -90.0751},
+      {"city": "Baton Rouge", "lat": 30.4515, "lng": -91.1871},
+      {"city": "Shreveport", "lat": 32.5252, "lng": -93.7502}
+    ]
+  },
+  {
+    "state": "Alabama",
+    "cities": [
+      {"city": "Huntsville", "lat": 34.7304, "lng": -86.5861},
+      {"city": "Birmingham", "lat": 33.5217, "lng": -86.8025},
+      {"city": "Montgomery", "lat": 32.3792, "lng": -86.3077}
+    ]
+  },
+  {
+    "state": "Indiana",
+    "cities": [
+      {"city": "Indianapolis", "lat": 39.7684, "lng": -86.1581},
+      {"city": "Fort Wayne", "lat": 41.0793, "lng": -85.1394},
+      {"city": "Evansville", "lat": 37.9716, "lng": -87.5711}
+    ]
+  },
+  {
+    "state": "Tennessee",
+    "cities": [
+      {"city": "Nashville", "lat": 36.1627, "lng": -86.7816},
+      {"city": "Memphis", "lat": 35.1495, "lng": -90.0490},
+      {"city": "Knoxville", "lat": 35.9606, "lng": -83.9207}
+    ]
+  },
+  {
+    "state": "Oklahoma",
+    "cities": [
+      {"city": "Oklahoma City", "lat": 35.4676, "lng": -97.5164},
+      {"city": "Tulsa", "lat": 36.15398, "lng": -95.99278},
+      {"city": "Norman", "lat": 35.2226, "lng": -97.4395}
+    ]
+  },
+  {
+    "state": "Ohio",
+    "cities": [
+      {"city": "Columbus", "lat": 39.9612, "lng": -82.9988},
+      {"city": "Cleveland", "lat": 41.4993, "lng": -81.6944},
+      {"city": "Cincinnati", "lat": 39.1031, "lng": -84.5120}
+    ]
+  },
+  {
+    "state": "Arkansas",
+    "cities": [
+      {"city": "Little Rock", "lat": 34.7465, "lng": -92.2896}
+    ]
+  },
+  {
+    "state": "Missouri",
+    "cities": [
+      {"city": "Kansas City", "lat": 39.0997, "lng": -94.5786}
+    ]
+  }
+]
